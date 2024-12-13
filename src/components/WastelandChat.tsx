@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 type Message = {
   id: string;
@@ -29,6 +30,8 @@ export const WastelandChat = () => {
   const [messages, setMessages] = useState<Message[]>(DEMO_MESSAGES);
   const [newMessage, setNewMessage] = useState("");
 
+  const { data: session } = useSession();
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
@@ -36,13 +39,15 @@ export const WastelandChat = () => {
     const message: Message = {
       id: Date.now().toString(),
       content: newMessage,
-      sender: "Survivor_" + Math.floor(Math.random() * 1000),
+      sender: session?.user?.username || "Unknown",
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, message]);
     setNewMessage("");
   };
+
+  console.log(session);
 
   return (
     <div className="terminal-container">

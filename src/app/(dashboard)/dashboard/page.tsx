@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import Link from "next/link";
 import { WastelandChat } from "@/components/WastelandChat";
+import { auth } from "../../../../auth";
+import { redirect } from "next/navigation";
 
 async function getLatestMessage() {
   return await db.message.findFirst({
@@ -27,6 +29,10 @@ const Dashboard = async () => {
   const message = await getLatestMessage();
   const posts = await getPosts();
 
+  const session = await auth();
+  if (!session) {
+    return redirect("/login");
+  }
   return (
     <div className="p-4 space-y-6">
       {/* Status Bar */}
