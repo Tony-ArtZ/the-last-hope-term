@@ -2,20 +2,114 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: "VT323";
+  src: url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #0c0c0c;
+  --foreground: #1c1c1c;
+  --primary: #199515;
+  --terminal-green: #4af626;
+  --terminal-dark: #143016;
+  --terminal-light: #45ff45;
 }
 
 body {
-  color: var(--foreground);
+  color: var(--terminal-green);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "VT323", monospace;
+}
+
+.terminal-input {
+  @apply bg-terminal-dark border-terminal-green border-2 text-terminal-green p-2 w-full 
+  focus:outline-none focus:border-terminal-light focus:ring-1 focus:ring-terminal-light
+  animate-terminal-flicker;
+}
+
+.terminal-input[type="file"] {
+  @apply file:mr-4 file:py-2 file:px-4
+  file:border-0 file:text-sm file:font-semibold
+  file:bg-terminal-dark file:text-terminal-green
+  hover:file:bg-terminal-light hover:file:text-background;
+}
+
+.terminal-error {
+  @apply text-red-500 text-sm mt-1;
+}
+
+.terminal-container {
+  @apply border-2 border-terminal-green bg-terminal-dark p-4 relative overflow-hidden;
+  background-size: 100% 200%;
+  box-shadow: 0 0 20px rgba(74, 246, 38, 0.2);
+  animation: bootup 0.5s ease-out;
+}
+
+@keyframes bootup {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.terminal-container::before {
+  content: "";
+  @apply absolute inset-0 pointer-events-none bg-terminal-scan animate-terminal-scan;
+}
+
+.terminal-header {
+  @apply text-terminal-light font-bold flex items-center space-x-2 mb-4;
+}
+
+.terminal-header::before {
+  content: ">";
+  @apply animate-terminal-blink;
+}
+
+.terminal-text {
+  @apply animate-terminal-glow;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.terminal-button {
+  @apply border-2 border-terminal-green bg-terminal-dark px-4 py-2 
+  hover:bg-terminal-light hover:text-background transition-colors
+  animate-terminal-glow cursor-pointer;
+}
+
+.terminal-alert {
+  @apply border-2 border-red-500 bg-red-900/20 text-red-500 p-2;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-terminal-type {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 0.15em solid var(--terminal-green);
+  letter-spacing: 0.15em;
+  animation: typing 2s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--terminal-green);
+  }
 }
