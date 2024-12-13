@@ -39,6 +39,7 @@ export const WastelandChat = () => {
     const message: Message = {
       id: Date.now().toString(),
       content: newMessage,
+      // @ts-ignore
       sender: session?.user?.username || "Unknown",
       timestamp: new Date(),
     };
